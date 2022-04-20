@@ -1,0 +1,12 @@
+source 'http://rubygems.org'
+
+gem 'bundler', '~> 2.0.2'
+gem 'racc', '~> 1.5.2'
+gem 'nokogiri', '~> 1.10.10'
+gem 'cucumber', '~> 3.1.0'
+gem 'rspec', '~> 3.7.0'
+gem 'selenium-webdriver', '~> 3.12.0'
+gem 'capybara', '~> 2.18'
+gem 'site_prism', '~> 2.13'
+gem 'without_accents', '~> 0.9.1'
+gem 'ffi', '1.15.0'

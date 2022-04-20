@@ -1,0 +1,13 @@
+##YAML Template
+---
+#profiles
+default: -p html_report -p chrome 
+ci: -p json_report -p chrome_headless 
+
+#reports
+html_report: --format pretty --format html --out=reports/features_report.html
+json_report: --format progress --format json --out=reports/features_report.json
+
+#browsers
+chrome: BROWSER=chrome
+chrome_headless: BROWSER=chrome_headless
