@@ -10,7 +10,7 @@ pipeline {
             steps {
                 echo 'Building or Resolving Dependencies'
                 sh 'rm -f Gemfile.lock'
-                sh 'gem install bundler -v 2.0.2'
+                // sh 'gem install bundler -v 2.0.2'
                 sh 'bundle install' 
             }
         }
