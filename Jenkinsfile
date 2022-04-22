@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'ruby:2.3.3'
+            image 'andressakarla1/rubywd'
         }
     }
 

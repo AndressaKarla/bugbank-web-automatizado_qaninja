@@ -2,7 +2,7 @@
 ### QA NINJA
 ###
 
-FROM ruby:2.3.3-stretch
+FROM ruby:2.3.6-stretch
 
 RUN echo 'APT::Get::Assume-Yes "true";' > /etc/apt/apt.conf.d/90qaninja \
   && echo 'DPkg::Options "--force-confnew";' >> /etc/apt/apt.conf.d/90qaninja
@@ -49,36 +49,17 @@ ENV PATH /home/qaninja/.local/bin:/home/qaninja/bin:${PATH}
 RUN if grep -q Debian /etc/os-release && grep -q stretch /etc/os-release; then \
 		echo 'deb http://deb.debian.org/debian stretch-backports main' | sudo tee -a /etc/apt/sources.list.d/stretch-backports.list; \
 	elif grep -q Ubuntu /etc/os-release && grep -q xenial /etc/os-release; then \
+    sudo gpg --keyserver pgpkeys.mit.edu --recv-key 648ACFD622F3D138 && \
+    sudo gpg -a --export 648ACFD622F3D138 | sudo apt-key add -&& \
 		sudo apt-get update && sudo apt-get install -y software-properties-common && \
 		sudo add-apt-repository -y ppa:openjdk-r/ppa; \
 	fi && \
+  sudo gpg --keyserver pgpkeys.mit.edu --recv-key 0E98404D386FA1D9 && \
+  sudo gpg -a --export 0E98404D386FA1D9 | sudo apt-key add - && \
 	sudo apt-get update && sudo apt-get install -y openjdk-11-jre openjdk-11-jre-headless openjdk-11-jdk openjdk-11-jdk-headless && \
 	sudo apt-get install -y bzip2 libgconf-2-4 # for extracting firefox and running chrome, respectively
 
-# install firefox
-#
-RUN FIREFOX_URL="https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=en-US" \
-  && ACTUAL_URL=$(curl -Ls -o /dev/null -w %{url_effective} $FIREFOX_URL) \
-  && curl --silent --show-error --location --fail --retry 3 --output /tmp/firefox.tar.bz2 $ACTUAL_URL \
-  && sudo tar -xvjf /tmp/firefox.tar.bz2 -C /opt \
-  && sudo ln -s /opt/firefox/firefox /usr/local/bin/firefox \
-  && sudo apt-get install -y libgtk3.0-cil-dev libasound2 libasound2 libdbus-glib-1-2 libdbus-1-3 \
-  && rm -rf /tmp/firefox.* \
-  && firefox --version
-
-# install geckodriver
-
-RUN export GECKODRIVER_LATEST_RELEASE_URL=$(curl https://api.github.com/repos/mozilla/geckodriver/releases/latest | jq -r ".assets[] | select(.name | test(\"linux64\")) | .browser_download_url") \
-     && curl --silent --show-error --location --fail --retry 3 --output /tmp/geckodriver_linux64.tar.gz "$GECKODRIVER_LATEST_RELEASE_URL" \
-     && cd /tmp \
-     && tar xf geckodriver_linux64.tar.gz \
-     && rm -rf geckodriver_linux64.tar.gz \
-     && sudo mv geckodriver /usr/local/bin/geckodriver \
-     && sudo chmod +x /usr/local/bin/geckodriver \
-     && geckodriver --version
-
 # install chrome
-
 RUN curl --silent --show-error --location --fail --retry 3 --output /tmp/google-chrome-stable_current_amd64.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
     && (sudo dpkg -i /tmp/google-chrome-stable_current_amd64.deb || sudo apt-get -fy install)  \
     && rm -rf /tmp/google-chrome-stable_current_amd64.deb \
@@ -96,13 +77,6 @@ RUN CHROME_VERSION="$(google-chrome --version)" \
     && sudo mv chromedriver /usr/local/bin/chromedriver \
     && sudo chmod +x /usr/local/bin/chromedriver \
     && chromedriver --version
-
-# Install Postgres
-
-RUN wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | sudo apt-key add - \
-    && sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main" >> /etc/apt/sources.list.d/pgdg.list' \
-    && sudo apt-get update \
-    && sudo apt-get install postgresql postgresql-contrib
 
 # start xvfb automatically to avoid needing to express
 ENV DISPLAY :99
