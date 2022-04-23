@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-# gem 'bundler', '~> 2.0.2'
+gem 'bundler', '~> 1.16.1'
 gem 'racc', '~> 1.5.2'
 gem 'nokogiri', '~> 1.10.10'
 gem 'cucumber', '~> 3.1.0'
