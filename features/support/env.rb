@@ -46,7 +46,7 @@ Before do |feature|
     end
 
     ## Define o tempo máximo de espera
-    Capybara.default_max_wait_time = 75
+    Capybara.default_max_wait_time = 10
 end
 
 ## Configurações após cada cenário
