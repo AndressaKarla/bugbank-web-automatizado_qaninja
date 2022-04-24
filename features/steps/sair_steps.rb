@@ -9,5 +9,5 @@ end
 
 Então("deve ser apresentado a tela de login") do
   sair_page.wait_until_texto_banco_bugs_falhas_visible
-  expect(sair_page.texto_banco_bugs_falhas).to have_content("O banco com bugs e falhas do seu jeito")
+  expect(sair_page.texto_banco_bugs_falhas).to have_content("O banco com bugs e falhas do seu jeitoo")
 end
